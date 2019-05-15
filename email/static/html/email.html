@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script>
+        var yanzhengma="";
+        $(function(){
+            $("#send").click(function(){
+                var email = $("#email").val();
+                if(!email){
+                    alert("请输入邮箱")
+                }else {
+                    $("#send").html("发送中...");
+                    $.get("http://localhost:9200/test/email",{addressee:email},function(result){
+                        var flag = result.flag;
+                        var message = result.message;
+                        if(flag==true){
+                            yanzhengma = result.yanzhengma;
+                        }else {
+                            yanzhengma="";
+                        }
+                        $("#send").html(message);
+                    },"json")
+                }
+            })
+            $("#ok").click(function(){
+                var yanzhengma2 = $("#yanzhengma").val();
+                if(!yanzhengma2){return;};
+                if(yanzhengma2==yanzhengma){
+                    alert("验证成功!");
+                }else {
+                    alert("验证失败!请从新验证!");
+                }
+            })
+            $("#ok1").click(function(){
+                var path = $("#path").val();
+                if(path!="" || path =='d' || path =='e' || path =='f' || path =='g' || path =='H'|| path =='D' || path =='E' || path =='F' || path =='G' || path =='H' ){
+                    $.get("http://localhost:9200/ordersItemPoi/derive",{path:path},function(flag){
+                        if(flag){
+                            alert("导出成功！");
+                            path.val("");
+                        }else {
+                            alert("导出失败！");
+                            path.val("");
+                        }
+                    },"json")
+                }else {
+                    alert("请输入导出路径");
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+邮箱：<input type="text" id="email"><br>
+验证码：<input type="text" id="yanzhengma"><button id="send">发送验证码</button>
+<button id="ok">验证验证码</button><br/>
+<input type="text" id="path" placeholder="路径">
+<button id="ok1">导出</button>
+</body>
+</html>
